@@ -4,9 +4,11 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+const dbUrl = 'mongodb://localhost:27017/short_url';
+
 const port = process.env.PORT || 3000;
 
-mongoose.connect('mongodb://localhost/shortened_url', function(err){
+mongoose.connect(dbUrl, function(err, db){
 	if(err){
 		console.log('Failed to connect to MongoDB');
 	}else{
@@ -14,11 +16,8 @@ mongoose.connect('mongodb://localhost/shortened_url', function(err){
 	}
 });
 
-//Model
-let URL = mongoose.model('URL',{
-	original_url : String,
-	short_url : Number
-});
+let URL = mongoose.model('URL', {original_url : String, short_url : Number});
+
 
 app.get('/', function(req, res){
 	res.send('Welcome to the shortened url app. Enter a url as a parameter!');
@@ -32,6 +31,7 @@ app.get('*', function(req, res){
 	if(!validUrl){
 		// is the url in the database for short?
 		URL.find({short_url: cleanUrl}, function(err, url){
+			console.log(url);
 			if(!err && url.length == 1){
 				if(url[0].original_url.charAt(0) == 'h'){
 					res.redirect(url[0].original_url);
@@ -45,23 +45,23 @@ app.get('*', function(req, res){
 
 	}else{
 		URL.find({original_url : cleanUrl}, function(err, url){
+			console.log(url);
 			if(err){
 				throw err;
 			}else if(!url.length){
 				let urlNumber = getRandomUrlNumber();
 				URL.create({original_url : cleanUrl, 
 						short_url : urlNumber}, 
-				function(err){
+				function(err, data){
 					if(err){
 						throw err;
 					}else{
-						console.log('URL added');
+						console.log(data);
 						res.json({original_url : cleanUrl,
 							short_url : urlNumber});
 					}
 				});
 			}else if(url.length == 1){
-				console.log(url);
 				res.json({original_url : url[0].original_url,
 					short_url : url[0].short_url});
 			}
@@ -70,10 +70,10 @@ app.get('*', function(req, res){
 
 });
 
+
 app.listen(port);
 
 
-// Check if parameter URL is valid
 function isUrlValid(url){
 	let pattern = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/; // fragment locater
 	  if(!pattern.test(url)) {
@@ -84,10 +84,7 @@ function isUrlValid(url){
 }
 
 
-// If it is, get a random number
 function getRandomUrlNumber(){
 	return Math.floor(Math.random() * (1000 - 1) + 1);
 }
 
-
-// associate both urls with the appropriate redirect
