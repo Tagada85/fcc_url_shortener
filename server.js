@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-const dbUrl = 'mongodb://localhost:27017/short_url';
+const dbUrl =  'mongodb://Tagada85:kallon85@ds01316.mlab.com:1316/short_url';
 
 const port = process.env.PORT || 3000;
 
