@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 
 const app = express();
 
+const port = process.env.PORT || 3000;
+
 mongoose.connect('mongodb://localhost/shortened_url', function(err){
 	if(err){
 		console.log('Failed to connect to MongoDB');
@@ -68,7 +70,7 @@ app.get('*', function(req, res){
 
 });
 
-app.listen(3000);
+app.listen(port);
 
 
 // Check if parameter URL is valid
