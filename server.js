@@ -27,6 +27,7 @@ app.get('/', function(req, res){
 
 app.get('*', function(req, res){
 	let url = req.url;
+	console.log(req.hostname);
 	var cleanUrl = url.slice(1);
 	let validUrl = isUrlValid(cleanUrl);
 	if(!validUrl){
