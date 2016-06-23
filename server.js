@@ -48,7 +48,6 @@ app.get('*', function(req, res){
 
 	}else{
 		URL.find({original_url : cleanUrl}, function(err, url){
-			console.log(url);
 			if(err){
 				throw err;
 			}else if(!url.length){
@@ -59,18 +58,23 @@ app.get('*', function(req, res){
 					if(err){
 						throw err;
 					}else{
-						console.log(data);
-						res.json({original_url : cleanUrl,
-							short_url :  'https://' + req.hostname + '/' + urlNumber});
+						let results = {
+							original_url : cleanUrl,
+							short_url :  'https://' + req.hostname + '/' + urlNumber
+						}
+						res.json(results);
 					}
 				});
 			}else if(url.length == 1){
-				let fullShortUrl = hostUrl + url[0].short_url;
-				res.json({original_url : url[0].original_url,
-					short_url : '<a href="' + fullShortUrl + '">' + fullShortUrl + '</a>' }
-		});
-	}
+				let results = {
+					original_url : url[0].original_url,
+					short_url : 'https://' + req.hostname + '/' + url[0].short_url
+				}
+				res.json(results);
+		}
 
+	});
+	}
 });
 
 
