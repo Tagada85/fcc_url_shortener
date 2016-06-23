@@ -28,6 +28,7 @@ app.get('/', function(req, res){
 app.get('*', function(req, res){
 	let url = req.url;
 	console.log(req.hostname);
+	var hostUrl = 'https://' + req.hostname + '/';
 	var cleanUrl = url.slice(1);
 	let validUrl = isUrlValid(cleanUrl);
 	if(!validUrl){
@@ -60,13 +61,13 @@ app.get('*', function(req, res){
 					}else{
 						console.log(data);
 						res.json({original_url : cleanUrl,
-							short_url : urlNumber});
+							short_url :  'https://' + req.hostname + '/' + urlNumber});
 					}
 				});
 			}else if(url.length == 1){
+				let fullShortUrl = hostUrl + url[0].short_url;
 				res.json({original_url : url[0].original_url,
-					short_url : url[0].short_url});
-			}
+					short_url : '<a href="' + fullShortUrl + '">' + fullShortUrl + '</a>' }
 		});
 	}
 
