@@ -4,12 +4,13 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-const dbUrl =  'mongodb://Tagada85:kallon85@ds01316.mlab.com:1316/short_url';
+const dbUrl =  'mongodb://Tagada:kallon85@ds019634.mlab.com:19634/short_url';
 
 const port = process.env.PORT || 3000;
 
 mongoose.connect(dbUrl, function(err, db){
 	if(err){
+		throw err;
 		console.log('Failed to connect to MongoDB');
 	}else{
 		console.log('Successfully connected to MongoDB');
